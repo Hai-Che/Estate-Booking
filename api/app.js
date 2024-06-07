@@ -10,8 +10,7 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin: ["https://estate-booking-frontend.vercel.app"],
-    methods: ["POST", "GET"],
+    origin: "https://estate-booking-frontend.vercel.app",
     credentials: true,
   })
 );

@@ -6,6 +6,7 @@ import chatRoute from "./routes/chat.route.js";
 import messageRoute from "./routes/message.route.js";
 import verifyRoute from "./routes/verify.route.js";
 import cookieParser from "cookie-parser";
+import "dotenv/config";
 import cors from "cors";
 const app = express();
 app.use(

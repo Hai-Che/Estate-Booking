@@ -38,7 +38,8 @@ export const login = async (req, res) => {
       {
         id: user.id,
       },
-      process.env.JWT_SECRET,
+      // process.env.JWT_SECRET,
+      "lah",
       {
         expiresIn: age,
       }

@@ -17,10 +17,10 @@ export const getPosts = async (req, res) => {
         },
       },
     });
-    res.status(200).json(posts);
+    return res.status(200).json(posts);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Failed to get all posts" });
+    return res.status(500).json({ message: "Failed to get all posts" });
   }
 };
 export const getPost = async (req, res) => {
@@ -66,25 +66,26 @@ export const getPost = async (req, res) => {
     // }
     const token = req.cookies?.token;
 
+    let isSaved = false;
+
     if (token) {
-      jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
-        if (!err) {
-          const saved = await prisma.savedPost.findUnique({
-            where: {
-              userId_postId: {
-                postId: id,
-                userId: payload.id,
-              },
+      try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const saved = await prisma.savedPost.findUnique({
+          where: {
+            userId_postId: {
+              postId: id,
+              userId: payload.id,
             },
-          });
-          res.status(200).json({ ...post, isSaved: saved ? true : false });
-        }
-      });
+          },
+        });
+        isSaved = !!saved;
+      } catch (err) {}
     }
-    res.status(200).json({ ...post, isSaved: false });
+    return res.status(200).json({ ...post, isSaved });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to get post" });
+    return res.status(500).json({ message: "Failed to get post" });
   }
 };
 export const addPost = async (req, res) => {
@@ -100,18 +101,18 @@ export const addPost = async (req, res) => {
         },
       },
     });
-    res.status(200).json(newPost);
+    return res.status(200).json(newPost);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Failed to add post" });
+    return res.status(500).json({ message: "Failed to add post" });
   }
 };
 export const updatePost = async (req, res) => {
   try {
-    res.status(200).json();
+    return res.status(200).json();
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Failed to update post" });
+    return res.status(500).json({ message: "Failed to update post" });
   }
 };
 export const deletePost = async (req, res) => {
@@ -130,9 +131,9 @@ export const deletePost = async (req, res) => {
     await prisma.post.delete({
       where: { id },
     });
-    res.status(200).json({ message: "Delete post successfully" });
+    return res.status(200).json({ message: "Delete post successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Failed to delete post" });
+    return res.status(500).json({ message: "Failed to delete post" });
   }
 };
